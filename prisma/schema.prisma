@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Note: SQLite doesn't support enums, so we use String types with constraints
+// Valid values: METRO, TIER2, TIER3
+// Valid values: DRAFT, PENDING_PAYMENT, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
+// Valid values: PLANNING, PRE_EVENT, EVENT_DAY, POST_EVENT
+// Valid values: INVITED, CONFIRMED, DECLINED, ATTENDED
+// Valid values: PER_EVENT, FIXED, PER_GUEST
+// Valid values: YOUTUBE, ZOOM, INSTAGRAM, OTHER
+// Valid values: PHOTO, VIDEO, OTHER
+// Valid values: PENDING, ASSIGNED, COMPLETED
+// Valid values: CUSTOMER, ADMIN, ZONE_MANAGER
+// Valid values: OPEN, IN_PROGRESS, RESOLVED, CLOSED
+// Valid values: LOW, MEDIUM, HIGH
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  role         String   @default("CUSTOMER") // CUSTOMER | ADMIN | ZONE_MANAGER
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings          Booking[]
+  ratings           Rating[]
+  zoneManagerProfile ZoneManagerProfile?
+  reportedIssues    Issue[] @relation("Reporter")
+  assignedIssues    Issue[] @relation("Assignee")
+}
+
+model City {
+  id   String   @id @default(cuid())
+  name String
+  state String
+  type String   // METRO | TIER2 | TIER3
+
+  bookings Booking[]
+}
+
+model PackageCategory {
+  id                  String   @id @default(cuid())
+  name                String   @unique // Ultra High, Upper Middle Premium, etc.
+  description         String?
+  basePriceMetro      Float
+  basePriceTier2      Float
+  basePriceTier3      Float
+  defaultGuestRangeMin Int
+  defaultGuestRangeMax Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  presets  PackagePreset[]
+  bookings Booking[]
+}
+
+model PackagePreset {
+  id              String   @id @default(cuid())
+  packageCategoryId String
+  cityType        String   // METRO | TIER2 | TIER3
+  includedServices String  // JSON string: { food: "...", decor: "...", sound: "...", etc. }
+  basePrice       Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  packageCategory PackageCategory @relation(fields: [packageCategoryId], references: [id], onDelete: Cascade)
+  bookings        Booking[]
+}
+
+model AddOn {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  priceType   String   // PER_EVENT | FIXED | PER_GUEST
+  basePrice   Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bookingAddOns BookingAddOn[]
+}
+
+model Booking {
+  id                      String   @id @default(cuid())
+  userId                  String
+  packageCategoryId       String
+  packagePresetId         String?
+  cityId                  String
+  eventDate               DateTime
+  guestCount              Int
+  totalPrice               Float
+  status                  String   @default("DRAFT") // DRAFT | PENDING_PAYMENT | CONFIRMED | IN_PROGRESS | COMPLETED | CANCELLED
+  currentStage            String   @default("PLANNING") // PLANNING | PRE_EVENT | EVENT_DAY | POST_EVENT
+  aiRecommendationSummary String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packageCategory PackageCategory @relation(fields: [packageCategoryId], references: [id])
+  packagePreset   PackagePreset?  @relation(fields: [packagePresetId], references: [id])
+  city            City            @relation(fields: [cityId], references: [id])
+  
+  addOns          BookingAddOn[]
+  guests          Guest[]
+  liveStreams     LiveStream[]
+  mediaAssets     MediaAsset[]
+  ratings         Rating[]
+  zoneAssignments ZoneAssignment[]
+  chatMessages    ChatMessage[]
+  issues          Issue[]
+}
+
+model BookingAddOn {
+  id        String  @id @default(cuid())
+  bookingId String
+  addOnId   String
+  quantity  Int     @default(1)
+  price     Float
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  addOn   AddOn   @relation(fields: [addOnId], references: [id])
+}
+
+model Guest {
+  id          String   @id @default(cuid())
+  bookingId   String
+  name        String
+  phone       String?
+  email       String?
+  status      String   @default("INVITED") // INVITED | CONFIRMED | DECLINED | ATTENDED
+  inviteToken String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model LiveStream {
+  id        String   @id @default(cuid())
+  bookingId String
+  platform  String   // YOUTUBE | ZOOM | INSTAGRAM | OTHER
+  url       String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  bookingId String
+  url       String
+  type      String   // PHOTO | VIDEO | OTHER
+  label     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model Rating {
+  id             String   @id @default(cuid())
+  bookingId      String   @unique
+  userId         String
+  overallScore   Int      // 1-5
+  foodScore      Int?     // 1-5
+  decorScore     Int?     // 1-5
+  experienceScore Int?    // 1-5
+  comments       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Zone {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignments        ZoneAssignment[]
+  zoneManagerProfiles ZoneManagerProfile[]
+}
+
+model ZoneAssignment {
+  id        String   @id @default(cuid())
+  bookingId String
+  zoneId    String
+  status    String   @default("PENDING") // PENDING | ASSIGNED | COMPLETED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  zone    Zone    @relation(fields: [zoneId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  bookingId String
+  senderId  String?  // null for system messages
+  senderType String  // "USER" | "ZONE_MANAGER" | "ADMIN"
+  message   String
+  createdAt DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model ZoneManagerProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  zoneId    String
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  zone Zone @relation(fields: [zoneId], references: [id])
+}
+
+model Issue {
+  id            String   @id @default(cuid())
+  bookingId     String
+  userId        String   // Reporter
+  zoneManagerId String?  // Assignee (nullable)
+  title         String
+  description   String
+  status        String   @default("OPEN") // OPEN | IN_PROGRESS | RESOLVED | CLOSED
+  priority      String   @default("MEDIUM") // LOW | MEDIUM | HIGH
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  booking     Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  reporter    User    @relation("Reporter", fields: [userId], references: [id], onDelete: Cascade)
+  assignee    User?   @relation("Assignee", fields: [zoneManagerId], references: [id], onDelete: SetNull)
+}
+
+model PlannerConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g., "style_multiplier_trendy", "guest_factor_base"
+  value     String   // JSON string for complex values
+  scope     String?  // GLOBAL | CATEGORY | CITYTYPE
+  scopeId   String?  // If scope is CATEGORY or CITYTYPE, reference ID
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
