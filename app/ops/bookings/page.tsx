@@ -10,6 +10,7 @@ import { PageWrapper } from '@/components/admin/page-wrapper'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { MapPin, Filter, Users } from 'lucide-react'
+import { ClickableTableRow } from '@/components/clickable-table-row'
 
 export default async function OpsBookingsPage({
   searchParams,
@@ -155,43 +156,42 @@ export default async function OpsBookingsPage({
                     </TableRow>
                   ) : (
                     bookings.map((booking) => (
-                      <TableRow 
+                      <ClickableTableRow 
                         key={booking.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        asChild
+                        href={`/ops/bookings/${booking.id}`}
                       >
-                        <Link href={`/ops/bookings/${booking.id}`}>
-                          <TableCell className="font-mono text-xs text-muted-foreground">
-                            {shortenId(booking.id)}
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              {formatDate(booking.eventDate)}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1.5">
-                              <MapPin className="w-3 h-3 text-muted-foreground" />
-                              <span className="text-sm">{booking.city.name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <StageBadge stage={booking.currentStage} />
-                          </TableCell>
-                          <TableCell>
-                            <StatusBadge status={booking.status} />
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1.5">
-                              <Users className="w-3 h-3 text-muted-foreground" />
-                              <span className="text-sm">{booking.guestCount}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <span className="text-sm text-primary hover:underline">View →</span>
-                          </TableCell>
-                        </Link>
-                      </TableRow>
+                        <TableCell className="font-mono text-xs text-muted-foreground">
+                          {shortenId(booking.id)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {formatDate(booking.eventDate)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-sm">{booking.city.name}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <StageBadge stage={booking.currentStage} />
+                        </TableCell>
+                        <TableCell>
+                          <StatusBadge status={booking.status} />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <Users className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-sm">{booking.guestCount}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Link href={`/ops/bookings/${booking.id}`} className="text-sm text-primary hover:underline">
+                            View →
+                          </Link>
+                        </TableCell>
+                      </ClickableTableRow>
                     ))
                   )}
                 </TableBody>
