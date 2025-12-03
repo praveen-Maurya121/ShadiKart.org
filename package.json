@@ -15,7 +15,12 @@
     "db:reset": "tsx prisma/reset-db.ts",
     "db:create-admin": "tsx prisma/create-admin.ts",
     "db:create-zone-manager": "tsx prisma/create-zone-manager.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop shadikart",
+    "pm2:restart": "pm2 restart shadikart",
+    "pm2:logs": "pm2 logs shadikart",
+    "production:start": "bash scripts/production-start.sh"
   },
   "dependencies": {
     "@prisma/client": "^5.19.0",

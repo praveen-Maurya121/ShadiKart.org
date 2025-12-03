@@ -158,10 +158,7 @@ Praveen Maurya
 
 ### EC2 Deployment
 
-For deploying to AWS EC2 instance with public IP:
-
-1. **Quick Deploy**: See [QUICK_DEPLOY.md](./QUICK_DEPLOY.md) for automated setup
-2. **Manual Deploy**: See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
+For deploying to AWS EC2 instance, see the comprehensive guide: **[EC2_DEPLOYMENT.md](./EC2_DEPLOYMENT.md)**
 
 **Quick Start:**
 ```bash
@@ -177,8 +174,24 @@ The deployment script will:
 - Set up the database
 - Build and start the application
 - Configure nginx as reverse proxy
+- Set up PM2 for process management
+
+**Production Setup:**
+```bash
+# Set up PostgreSQL database
+./scripts/setup-postgres.sh
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your settings
+
+# Start production server
+npm run production:start
+```
 
 Access your app at: `http://YOUR_EC2_PUBLIC_IP`
+
+For detailed instructions, troubleshooting, and best practices, see [EC2_DEPLOYMENT.md](./EC2_DEPLOYMENT.md)
 
 ## 🔗 Links
 

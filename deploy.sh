@@ -121,9 +121,19 @@ if pm2 list | grep -q "shadikart"; then
     pm2 delete shadikart || true
 fi
 
-# Start with PM2
+# Create logs directory
+mkdir -p logs
+
+# Make scripts executable
+chmod +x scripts/*.sh 2>/dev/null || true
+
+# Start with PM2 using ecosystem config
 echo -e "${YELLOW}🚀 Starting application with PM2...${NC}"
-pm2 start npm --name "shadikart" -- start
+if [ -f ecosystem.config.js ]; then
+    pm2 start ecosystem.config.js
+else
+    pm2 start npm --name "shadikart" -- start
+fi
 pm2 save
 
 # Setup PM2 startup
