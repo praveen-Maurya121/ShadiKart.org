@@ -79,9 +79,9 @@ export default function PackageDetailPage() {
     : (servicesRaw || {})
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white flex flex-col">
       <Navbar />
-      <main className="page-shell-premium">
+      <main className="page-shell-premium flex-1">
         <PageWrapper>
           {/* Back Button */}
           <div className="mb-8 pt-8">
@@ -101,10 +101,10 @@ export default function PackageDetailPage() {
                 Premium Package
               </span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl mb-4 bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 bg-clip-text text-transparent">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 bg-clip-text text-transparent">
               {pkg.name}
             </h1>
-            <p className="text-muted-foreground text-lg max-w-3xl leading-relaxed">
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-3xl leading-relaxed">
               {pkg.description || "Experience luxury beyond compare with our premium wedding package, featuring top-tier services and unforgettable moments."}
             </p>
           </div>
