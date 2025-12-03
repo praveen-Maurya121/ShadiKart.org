@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { PageWrapper } from "@/components/page-wrapper"
 import { EmptyState } from "@/components/empty-state"
 import { formatCurrency, formatDate } from "@/lib/utils"
@@ -25,9 +26,9 @@ export default async function BookingsPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white flex flex-col">
       <Navbar />
-      <main className="page-shell-premium">
+      <main className="page-shell-premium flex-1">
         <PageWrapper>
           {/* Header Section */}
           <div className="mb-12 pt-8">
@@ -39,15 +40,15 @@ export default async function BookingsPage() {
                     Your Events
                   </span>
                 </div>
-                <h1 className="font-display text-4xl md:text-5xl lg:text-6xl mb-3 bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 bg-clip-text text-transparent">
+                <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-3 bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 bg-clip-text text-transparent">
                   My Bookings
                 </h1>
-                <p className="text-muted-foreground text-lg">
+                <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
                   Welcome back, <strong className="text-foreground">{user.name}</strong>. Here are your upcoming events.
                 </p>
               </div>
-              <Link href="/planner">
-                <Button className="btn-primary group">
+              <Link href="/planner" className="w-full sm:w-auto">
+                <Button className="btn-primary group w-full sm:w-auto">
                   <Sparkles className="h-4 w-4 mr-2" />
                   Create New Booking
                 </Button>
@@ -94,7 +95,7 @@ export default async function BookingsPage() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Key Details Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-blue-50/50 to-indigo-50/30 border border-blue-100/50">
                         <div className="p-2 rounded-lg bg-blue-100/50">
                           <Calendar className="h-5 w-5 text-blue-600" strokeWidth={1.75} />
@@ -150,6 +151,7 @@ export default async function BookingsPage() {
           )}
         </PageWrapper>
       </main>
+      <Footer />
     </div>
   )
 }

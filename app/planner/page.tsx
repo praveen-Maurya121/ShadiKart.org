@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { PageWrapper } from "@/components/page-wrapper"
 import { LoadingState } from "@/components/loading-state"
 import { formatCurrency } from "@/lib/utils"
@@ -146,13 +147,13 @@ export default function PlannerPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="page-shell-premium">
+      <main className="page-shell-premium flex-1">
         <PageWrapper>
-          <div className="text-center mb-12 scroll-fade">
-            <h1 className="font-display text-4xl md:text-5xl mb-4">AI Wedding Planner</h1>
-            <p className="text-lg text-muted-foreground">
+          <div className="text-center mb-8 md:mb-12 scroll-fade">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-4">AI Wedding Planner</h1>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground px-4">
               Tell us about your dream wedding and we&apos;ll recommend the perfect package
             </p>
           </div>
@@ -206,7 +207,7 @@ export default function PlannerPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="budgetMin">Budget Min (₹)</Label>
                     <Input
@@ -343,6 +344,7 @@ export default function PlannerPage() {
         )}
         </PageWrapper>
       </main>
+      <Footer />
     </div>
   )
 }

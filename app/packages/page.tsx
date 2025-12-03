@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { PageWrapper } from "@/components/page-wrapper"
 import { LoadingState } from "@/components/loading-state"
 import { EmptyState } from "@/components/empty-state"
@@ -44,9 +45,9 @@ export default function PackagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white flex flex-col">
       <Navbar />
-      <main className="page-shell-premium">
+      <main className="page-shell-premium flex-1">
         <PageWrapper>
           {/* Hero Section */}
           <div className="text-center mb-16 pt-8">
@@ -56,10 +57,10 @@ export default function PackagesPage() {
                 Premium Packages
               </span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl mb-4 bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 bg-clip-text text-transparent">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 bg-gradient-to-r from-yellow-900 via-yellow-700 to-yellow-900 bg-clip-text text-transparent">
               Our Wedding Packages
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
               Choose the perfect package for your special day. Each package is carefully curated to make your celebration unforgettable.
             </p>
           </div>
@@ -161,6 +162,7 @@ export default function PackagesPage() {
           )}
         </PageWrapper>
       </main>
+      <Footer />
     </div>
   )
 }

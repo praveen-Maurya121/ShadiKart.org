@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { PageWrapper } from "@/components/page-wrapper"
 import { LoadingState } from "@/components/loading-state"
 import { formatCurrency, formatDate } from "@/lib/utils"
@@ -84,9 +85,9 @@ export default function BookingDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50/30 via-white to-white flex flex-col">
       <Navbar />
-      <main className="page-shell-premium">
+      <main className="page-shell-premium flex-1">
         <PageWrapper>
           {/* Back Button */}
           <div className="mb-8 pt-8">
@@ -195,6 +196,7 @@ export default function BookingDetailPage() {
           </Card>
         </PageWrapper>
       </main>
+      <Footer />
     </div>
   )
 }

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { PageWrapper } from "@/components/page-wrapper"
 import { LoadingState } from "@/components/loading-state"
 import { ArrowLeft, Sparkles, MapPin, Users, IndianRupee, CheckCircle2, ArrowRight, Wand2 } from "lucide-react"
@@ -226,6 +227,7 @@ export default function PackageDetailPage() {
           </div>
         </PageWrapper>
       </main>
+      <Footer />
     </div>
   )
 }
