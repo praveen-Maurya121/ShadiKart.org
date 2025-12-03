@@ -156,42 +156,43 @@ Praveen Maurya
 
 ## 🚀 Deployment
 
-### EC2 Deployment
+### Quick Deploy to EC2 (Public IP)
 
-For deploying to AWS EC2 instance, see the comprehensive guide: **[EC2_DEPLOYMENT.md](./EC2_DEPLOYMENT.md)**
+**For first-time deployment, see: [QUICK_START_EC2.md](./QUICK_START_EC2.md)**
 
-**Quick Start:**
+**One-Command Deploy:**
 ```bash
-# On your EC2 instance
-git clone https://github.com/praveen-Maurya121/ShadiKart.org.git
-cd ShadiKart.org
-chmod +x deploy.sh
-./deploy.sh
+# On your EC2 instance - Copy and paste this:
+git clone https://github.com/praveen-Maurya121/ShadiKart.org.git && cd ShadiKart.org && chmod +x deploy.sh && ./deploy.sh
 ```
 
 The deployment script will:
 - Install all dependencies (Node.js, PostgreSQL, PM2, nginx)
-- Set up the database
+- Set up the database (will prompt for password)
 - Build and start the application
 - Configure nginx as reverse proxy
 - Set up PM2 for process management
+- Configure everything for your Public IPv4 address
 
-**Production Setup:**
+**Important:** After deployment, make sure to:
+1. Open port 80 in your EC2 Security Group (AWS Console → EC2 → Security Groups)
+2. Access your app at: `http://YOUR_EC2_PUBLIC_IP`
+
+**Manual Steps (if needed):**
 ```bash
 # Set up PostgreSQL database
-./scripts/setup-postgres.sh
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'YOUR_PASSWORD';"
+sudo -u postgres psql -c "CREATE DATABASE shadikart;"
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your settings
+nano .env  # Update with your database password and Public IP
 
-# Start production server
-npm run production:start
+# Deploy
+./deploy.sh
 ```
 
-Access your app at: `http://YOUR_EC2_PUBLIC_IP`
-
-For detailed instructions, troubleshooting, and best practices, see [EC2_DEPLOYMENT.md](./EC2_DEPLOYMENT.md)
+For detailed step-by-step instructions, see [QUICK_START_EC2.md](./QUICK_START_EC2.md)
 
 ## 🔗 Links
 

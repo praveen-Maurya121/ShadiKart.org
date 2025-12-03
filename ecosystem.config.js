@@ -1,10 +1,12 @@
+const path = require('path');
+
 module.exports = {
   apps: [
     {
       name: 'shadikart',
       script: 'npm',
       args: 'start',
-      cwd: '/home/ubuntu/ShadiKart.org',
+      cwd: process.cwd(), // Use current directory instead of hardcoded path
       instances: 1,
       exec_mode: 'fork',
       env: {

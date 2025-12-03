@@ -64,23 +64,56 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
+# Get public IP early
+PUBLIC_IP=$(curl -s ifconfig.me || curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+
 # Check if .env exists
 if [ ! -f .env ]; then
     echo -e "${YELLOW}⚠️  .env file not found. Creating template...${NC}"
+    
+    # Check if database exists, if not create it
+    if ! sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw shadikart; then
+        echo -e "${YELLOW}📦 Creating PostgreSQL database...${NC}"
+        echo -e "${YELLOW}⚠️  You'll need to set a PostgreSQL password.${NC}"
+        read -sp "Enter password for PostgreSQL 'postgres' user: " POSTGRES_PASSWORD
+        echo ""
+        
+        sudo -u postgres psql << EOF
+ALTER USER postgres PASSWORD '$POSTGRES_PASSWORD';
+CREATE DATABASE shadikart;
+EOF
+        DB_PASSWORD=$POSTGRES_PASSWORD
+    else
+        echo -e "${GREEN}✓ Database 'shadikart' already exists${NC}"
+        read -sp "Enter PostgreSQL 'postgres' user password: " DB_PASSWORD
+        echo ""
+    fi
+    
+    NEXTAUTH_SECRET=$(openssl rand -base64 32)
+    
     cat > .env << EOF
 # Database (PostgreSQL for production)
-DATABASE_URL="postgresql://postgres:CHANGE_THIS_PASSWORD@localhost:5432/shadikart?schema=public"
+DATABASE_URL="postgresql://postgres:${DB_PASSWORD}@localhost:5432/shadikart?schema=public"
 
 # NextAuth
-NEXTAUTH_SECRET="$(openssl rand -base64 32)"
-NEXTAUTH_URL="http://$(curl -s ifconfig.me):3000"
+NEXTAUTH_SECRET="${NEXTAUTH_SECRET}"
+NEXTAUTH_URL="http://${PUBLIC_IP}"
 
 # Node Environment
 NODE_ENV=production
 EOF
-    echo -e "${RED}⚠️  Please edit .env file with your database password and public IP!${NC}"
-    echo -e "${YELLOW}Run: nano .env${NC}"
-    exit 1
+    echo -e "${GREEN}✓ .env file created with Public IP: ${PUBLIC_IP}${NC}"
+else
+    # Update NEXTAUTH_URL if it's not set correctly
+    if ! grep -q "NEXTAUTH_URL" .env || grep -q "localhost:3000" .env; then
+        echo -e "${YELLOW}⚠️  Updating NEXTAUTH_URL in .env file...${NC}"
+        if grep -q "NEXTAUTH_URL" .env; then
+            sed -i "s|NEXTAUTH_URL=.*|NEXTAUTH_URL=\"http://${PUBLIC_IP}\"|" .env
+        else
+            echo "NEXTAUTH_URL=\"http://${PUBLIC_IP}\"" >> .env
+        fi
+        echo -e "${GREEN}✓ Updated NEXTAUTH_URL to http://${PUBLIC_IP}${NC}"
+    fi
 fi
 
 # Install npm dependencies
@@ -143,15 +176,20 @@ if [ ! -z "$STARTUP_CMD" ]; then
     eval $STARTUP_CMD
 fi
 
-# Get public IP
-PUBLIC_IP=$(curl -s ifconfig.me)
+# Get public IP (already set earlier, but ensure it's available)
+if [ -z "$PUBLIC_IP" ]; then
+    PUBLIC_IP=$(curl -s ifconfig.me || curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+fi
 
 # Configure nginx
 echo -e "${YELLOW}⚙️  Configuring nginx...${NC}"
 sudo tee /etc/nginx/sites-available/shadikart > /dev/null << EOF
 server {
     listen 80;
-    server_name $PUBLIC_IP;
+    server_name $PUBLIC_IP _;
+
+    # Increase body size limit for file uploads
+    client_max_body_size 10M;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -163,6 +201,11 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_cache_bypass \$http_upgrade;
+        
+        # Timeouts
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
     }
 }
 EOF
@@ -176,4 +219,8 @@ echo -e "${GREEN}✅ Deployment complete!${NC}"
 echo -e "${GREEN}🌐 Access your application at: http://$PUBLIC_IP${NC}"
 echo -e "${YELLOW}📊 View logs: pm2 logs shadikart${NC}"
 echo -e "${YELLOW}🔄 Restart: pm2 restart shadikart${NC}"
+echo ""
+echo -e "${YELLOW}⚠️  IMPORTANT: Make sure your EC2 Security Group allows HTTP (port 80) traffic!${NC}"
+echo -e "${YELLOW}   Go to: AWS Console → EC2 → Security Groups → Edit Inbound Rules${NC}"
+echo -e "${YELLOW}   Add: Type=HTTP, Port=80, Source=0.0.0.0/0${NC}"
 
