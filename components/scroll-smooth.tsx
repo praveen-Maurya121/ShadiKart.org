@@ -103,9 +103,9 @@ export function ScrollSmooth() {
           const offset = (scrolled + windowHeight - elementTop) * 0.5
           
           if (element.classList.contains("parallax-slow")) {
-            element.style.transform = `translateY(${offset * 0.3}px)`
+            (element as HTMLElement).style.transform = `translateY(${offset * 0.3}px)`
           } else if (element.classList.contains("parallax-fast")) {
-            element.style.transform = `translateY(${-offset * 0.2}px)`
+            (element as HTMLElement).style.transform = `translateY(${-offset * 0.2}px)`
           }
         }
       })

@@ -100,7 +100,10 @@ export async function planWedding(input: PlannerInput): Promise<PlannerResult> {
   const suggestedAddOns = selectAddOns(allAddOns, preference, selectedCategory.name)
 
   // Generate summary text
-  const summaryText = generateSummary(selectedCategory, preset, estimatedPrice, guestCount, preference)
+  const includedServices = typeof preset.includedServices === 'string' 
+    ? JSON.parse(preset.includedServices) 
+    : preset.includedServices
+  const summaryText = generateSummary(selectedCategory, { ...preset, includedServices }, estimatedPrice, guestCount, preference)
 
   return {
     packageCategoryId: selectedCategory.id,

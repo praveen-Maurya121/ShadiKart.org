@@ -34,11 +34,11 @@ export default async function OpsDashboard() {
 
   const [
     assignedBookings,
-    bookingsByStage,
     todaysEvents,
+    bookingsByStage,
     upcomingEvents,
-    openIssues,
     inProgressBookings,
+    openIssues,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: {
@@ -145,9 +145,9 @@ export default async function OpsDashboard() {
     }),
   ])
 
-  const stageCounts = bookingsByStage.reduce(
+  const stageCounts = (bookingsByStage as Array<{ currentStage: string; _count: number }>).reduce(
     (acc, item) => {
-      acc[item.currentStage] = item._count
+      acc[item.currentStage] = item._count || 0
       return acc
     },
     {} as Record<string, number>
