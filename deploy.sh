@@ -87,6 +87,12 @@ fi
 echo -e "${YELLOW}📦 Installing npm dependencies...${NC}"
 npm install
 
+# Update Prisma schema for PostgreSQL if DATABASE_URL is PostgreSQL
+if grep -q "postgresql://" .env; then
+    echo -e "${YELLOW}🔧 Updating Prisma schema for PostgreSQL...${NC}"
+    sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
+fi
+
 # Generate Prisma Client
 echo -e "${YELLOW}🔧 Generating Prisma Client...${NC}"
 npx prisma generate

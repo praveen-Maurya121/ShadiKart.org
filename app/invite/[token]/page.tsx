@@ -32,7 +32,7 @@ export default async function InvitePage({
       <PageWrapper>
         <Card className="card-elevated w-full max-w-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="font-display text-4xl md:text-5xl mb-2">You're Invited!</CardTitle>
+            <CardTitle className="font-display text-4xl md:text-5xl mb-2">You&apos;re Invited!</CardTitle>
             <CardDescription className="text-lg">
               {guest.booking.packageCategory.name} Wedding
             </CardDescription>

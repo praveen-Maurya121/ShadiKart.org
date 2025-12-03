@@ -50,6 +50,7 @@ export function BookingMedia({ bookingId }: { bookingId: string }) {
           {media.map((asset) => (
             <div key={asset.id} className="border rounded-lg overflow-hidden">
               {asset.type === "PHOTO" ? (
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={asset.url}
                   alt={asset.label || "Event photo"}

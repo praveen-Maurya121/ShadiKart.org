@@ -2,6 +2,9 @@ import { requireUser } from '@/lib/auth-helpers'
 import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { RatingForm } from '@/components/rating-form'
+import { Navbar } from '@/components/navbar'
+import { PageWrapper } from '@/components/page-wrapper'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default async function RatePage({
   params,
@@ -68,7 +71,7 @@ export default async function RatePage({
                   {rating.comments && (
                     <div className="mt-6 p-4 rounded-lg border bg-muted/20">
                       <p className="text-sm text-muted-foreground mb-2">Your Comment</p>
-                      <p className="italic">"{rating.comments}"</p>
+                      <p className="italic">&quot;{rating.comments}&quot;</p>
                     </div>
                   )}
                 </div>

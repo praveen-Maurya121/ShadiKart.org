@@ -18,23 +18,26 @@ export function BookingChat({ bookingId }: { bookingId: string }) {
   const [loading, setLoading] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    fetchMessages()
-    const interval = setInterval(fetchMessages, 3000) // Poll every 3 seconds
-    return () => clearInterval(interval)
-  }, [bookingId])
-
   const fetchMessages = async () => {
     try {
       const res = await fetch(`/api/bookings/${bookingId}/chat`)
-      const data = await res.json()
-      setMessages(data)
-      setLoading(false)
+      if (res.ok) {
+        const data = await res.json()
+        setMessages(data)
+        setLoading(false)
+      }
     } catch (error) {
       console.error("Error fetching messages:", error)
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchMessages()
+    const interval = setInterval(fetchMessages, 3000) // Poll every 3 seconds
+    return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookingId])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })

@@ -153,7 +153,7 @@ export default function PlannerPage() {
           <div className="text-center mb-12 scroll-fade">
             <h1 className="font-display text-4xl md:text-5xl mb-4">AI Wedding Planner</h1>
             <p className="text-lg text-muted-foreground">
-              Tell us about your dream wedding and we'll recommend the perfect package
+              Tell us about your dream wedding and we&apos;ll recommend the perfect package
             </p>
           </div>
 

@@ -181,7 +181,7 @@ export default function PackageDetailPage() {
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
                 <CheckCircle2 className="h-6 w-6 text-primary" />
-                What's Included
+                What&apos;s Included
               </CardTitle>
               <CardDescription>Everything you need for your perfect wedding day</CardDescription>
             </CardHeader>
