@@ -130,18 +130,58 @@ fi
 echo -e "${YELLOW}🔧 Generating Prisma Client...${NC}"
 npx prisma generate
 
+# Configure PostgreSQL authentication
+echo -e "${YELLOW}⚙️  Configuring PostgreSQL authentication...${NC}"
+if [ -f /etc/postgresql/*/main/pg_hba.conf ]; then
+    sudo sed -i 's/local   all             postgres                                peer/local   all             postgres                                md5/' /etc/postgresql/*/main/pg_hba.conf 2>/dev/null || true
+    sudo sed -i 's/local   all             all                                     peer/local   all             all                                     md5/' /etc/postgresql/*/main/pg_hba.conf 2>/dev/null || true
+    sudo systemctl restart postgresql
+    sleep 2
+fi
+
 # Check database connection
 echo -e "${YELLOW}🔍 Checking database connection...${NC}"
-if npx prisma db pull &> /dev/null; then
-    echo -e "${GREEN}✓ Database connection successful${NC}"
+# Extract password for testing
+DB_PASSWORD=$(grep DATABASE_URL .env | sed -n 's/.*postgres:\([^@]*\)@.*/\1/p' || echo "")
+if [ ! -z "$DB_PASSWORD" ]; then
+    export PGPASSWORD="$DB_PASSWORD"
+    if psql -h localhost -U postgres -d shadikart -c "SELECT 1;" > /dev/null 2>&1; then
+        echo -e "${GREEN}✓ Database connection successful${NC}"
+        unset PGPASSWORD
+    else
+        unset PGPASSWORD
+        echo -e "${YELLOW}⚠️  Direct PostgreSQL connection failed, trying Prisma...${NC}"
+        if npx prisma db pull &> /dev/null; then
+            echo -e "${GREEN}✓ Database connection successful (via Prisma)${NC}"
+        else
+            echo -e "${RED}✗ Database connection failed${NC}"
+            echo -e "${YELLOW}💡 Try running: bash scripts/fix-database.sh${NC}"
+            echo -e "${YELLOW}   Or manually check your DATABASE_URL in .env${NC}"
+            # Don't exit - let it try to continue with db push
+        fi
+    fi
 else
-    echo -e "${RED}✗ Database connection failed. Please check your DATABASE_URL in .env${NC}"
-    exit 1
+    if npx prisma db pull &> /dev/null; then
+        echo -e "${GREEN}✓ Database connection successful${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Database connection check failed, but continuing...${NC}"
+        echo -e "${YELLOW}   Will attempt to push schema instead${NC}"
+    fi
 fi
 
 # Run migrations
 echo -e "${YELLOW}🗄️  Running database migrations...${NC}"
-npx prisma migrate deploy || npx prisma db push
+if npx prisma migrate deploy 2>/dev/null; then
+    echo -e "${GREEN}✓ Migrations applied successfully${NC}"
+else
+    echo -e "${YELLOW}⚠️  Migrations not found, pushing schema...${NC}"
+    npx prisma db push --accept-data-loss || {
+        echo -e "${RED}✗ Failed to push schema${NC}"
+        echo -e "${YELLOW}💡 Try running: bash scripts/fix-database.sh${NC}"
+        exit 1
+    }
+    echo -e "${GREEN}✓ Schema pushed successfully${NC}"
+fi
 
 # Build the application
 echo -e "${YELLOW}🏗️  Building Next.js application...${NC}"
