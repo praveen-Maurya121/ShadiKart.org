@@ -17,23 +17,21 @@ export default async function AdminLayout({
 
   return (
     <Providers>
-      <div className="min-h-screen bg-background">
-        <div className="flex">
-          {/* Sidebar */}
-          <AdminSidebar />
+      <div className="min-h-screen bg-background flex">
+        {/* Sidebar */}
+        <AdminSidebar />
 
-          {/* Main Content Area */}
-          <div className="flex-1 flex flex-col lg:pl-64">
-            {/* Header */}
-            <AdminHeader />
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header */}
+          <AdminHeader />
 
-            {/* Page Content */}
-            <main className="flex-1 overflow-auto">
-              <div className="max-w-7xl mx-auto px-4 py-6 lg:px-8">
-                {children}
-              </div>
-            </main>
-          </div>
+          {/* Page Content */}
+          <main className="flex-1 overflow-auto">
+            <div className="max-w-7xl mx-auto px-4 py-6 lg:px-8">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
     </Providers>

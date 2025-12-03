@@ -72,7 +72,7 @@ export function AdminSidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-card border-r border-border transition-transform duration-300 ease-in-out",
+          "fixed lg:relative top-0 left-0 z-40 h-screen lg:h-auto lg:min-h-screen w-64 flex-shrink-0 bg-card border-r border-border transition-transform duration-300 ease-in-out",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >

@@ -154,6 +154,32 @@ This project is private and proprietary.
 
 Praveen Maurya
 
+## 🚀 Deployment
+
+### EC2 Deployment
+
+For deploying to AWS EC2 instance with public IP:
+
+1. **Quick Deploy**: See [QUICK_DEPLOY.md](./QUICK_DEPLOY.md) for automated setup
+2. **Manual Deploy**: See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
+
+**Quick Start:**
+```bash
+# On your EC2 instance
+git clone https://github.com/praveen-Maurya121/ShadiKart.org.git
+cd ShadiKart.org
+chmod +x deploy.sh
+./deploy.sh
+```
+
+The deployment script will:
+- Install all dependencies (Node.js, PostgreSQL, PM2, nginx)
+- Set up the database
+- Build and start the application
+- Configure nginx as reverse proxy
+
+Access your app at: `http://YOUR_EC2_PUBLIC_IP`
+
 ## 🔗 Links
 
 - Repository: [https://github.com/praveen-Maurya121/ShadiKart.org](https://github.com/praveen-Maurya121/ShadiKart.org)

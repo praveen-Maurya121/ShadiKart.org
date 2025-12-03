@@ -10,6 +10,7 @@ import { StatusBadge } from '@/components/admin/status-badge'
 import { StageBadge } from '@/components/admin/stage-badge'
 import { PageWrapper } from '@/components/admin/page-wrapper'
 import { MapPin, Filter } from 'lucide-react'
+import { RowLink } from '@/components/admin/row-link'
 
 export default async function AdminBookingsPage({
   searchParams,
@@ -153,50 +154,44 @@ export default async function AdminBookingsPage({
                   </TableRow>
                 ) : (
                   bookings.map((booking) => (
-                    <TableRow 
-                      key={booking.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      asChild
-                    >
-                      <Link href={`/admin/bookings/${booking.id}`}>
-                        <TableCell className="font-mono text-xs text-muted-foreground">
-                          {shortenId(booking.id)}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {booking.user.name}
-                        </TableCell>
-                        <TableCell>
+                    <RowLink key={booking.id} href={`/admin/bookings/${booking.id}`}>
+                      <TableCell className="font-mono text-xs text-muted-foreground">
+                        {shortenId(booking.id)}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {booking.user.name}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-sm">{booking.city.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {formatDate(booking.eventDate)}
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={booking.status} />
+                      </TableCell>
+                      <TableCell>
+                        <StageBadge stage={booking.currentStage} />
+                      </TableCell>
+                      <TableCell>
+                        {booking.zoneAssignments.length > 0 ? (
                           <div className="flex items-center gap-1.5">
                             <MapPin className="w-3 h-3 text-muted-foreground" />
-                            <span className="text-sm">{booking.city.name}</span>
+                            <span className="text-sm">
+                              {booking.zoneAssignments[0].zone.name}
+                            </span>
                           </div>
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {formatDate(booking.eventDate)}
-                        </TableCell>
-                        <TableCell>
-                          <StatusBadge status={booking.status} />
-                        </TableCell>
-                        <TableCell>
-                          <StageBadge stage={booking.currentStage} />
-                        </TableCell>
-                        <TableCell>
-                          {booking.zoneAssignments.length > 0 ? (
-                            <div className="flex items-center gap-1.5">
-                              <MapPin className="w-3 h-3 text-muted-foreground" />
-                              <span className="text-sm">
-                                {booking.zoneAssignments[0].zone.name}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right font-semibold text-primary">
-                          {formatCurrency(booking.totalPrice)}
-                        </TableCell>
-                      </Link>
-                    </TableRow>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right font-semibold text-primary">
+                        {formatCurrency(booking.totalPrice)}
+                      </TableCell>
+                    </RowLink>
                   ))
                 )}
               </TableBody>

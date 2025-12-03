@@ -14,7 +14,8 @@
     "db:delete-users": "tsx prisma/delete-users.ts",
     "db:reset": "tsx prisma/reset-db.ts",
     "db:create-admin": "tsx prisma/create-admin.ts",
-    "db:create-zone-manager": "tsx prisma/create-zone-manager.ts"
+    "db:create-zone-manager": "tsx prisma/create-zone-manager.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.19.0",
