@@ -54,21 +54,21 @@ export function HeroSection() {
       
       {/* Content Layer */}
       <div className="page-shell relative z-10">
-        <div ref={contentRef} className="hero-content text-center">
-          <h1 className="hero-heading font-display text-5xl md:text-6xl lg:text-7xl mb-6 text-foreground">
+        <div ref={contentRef} className="hero-content text-center px-4">
+          <h1 className="hero-heading font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-4 sm:mb-6 text-foreground">
             Your Dream Wedding Starts Here
           </h1>
-          <p className="hero-description text-xl md:text-2xl text-foreground/95 mb-10 max-w-2xl mx-auto font-medium">
+          <p className="hero-description text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/95 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto font-medium px-4">
             Choose from our curated packages designed for every budget and style
           </p>
-          <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/planner">
-              <Button size="lg" className="btn-primary hero-btn-primary">
+          <div className="hero-buttons flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4">
+            <Link href="/planner" className="w-full sm:w-auto">
+              <Button size="lg" className="btn-primary hero-btn-primary w-full sm:w-auto">
                 Plan My Wedding
               </Button>
             </Link>
-            <Link href="/packages">
-              <Button size="lg" variant="outline" className="hero-btn-secondary">
+            <Link href="/packages" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="hero-btn-secondary w-full sm:w-auto">
                 Browse Packages
               </Button>
             </Link>
